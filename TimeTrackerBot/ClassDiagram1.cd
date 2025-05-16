@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="TimeTrackerBot.ApiServices.ActivityService">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAAAAACAIAgAASAIAAAAAAA=</HashCode>
+      <FileName>ApiServices\ActivityService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.AuthService">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="TimeTrackerBot.ApiServices.AuthService.TokenResponse" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ApiServices\AuthService.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAABAAgAAAAQAAAAAAA=</HashCode>
+      <FileName>ApiServices\AuthService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.ProjectService">
+    <Position X="5.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAABABIAAAABBIACAAAAAAgAQAAAAAgCCAI=</HashCode>
+      <FileName>ApiServices\ProjectService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.ProjectUser">
+    <Position X="9" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAACAAEAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ApiServices\ProjectService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.ProjectActivity">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>ApiServices\ProjectService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.TrackingService">
+    <Position X="3.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAgAAAAAAAAAAEA=</HashCode>
+      <FileName>ApiServices\TrackingService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.ApiServices.UserService">
+    <Position X="7.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAIAAAAAAAABAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>ApiServices\UserService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Methods.Activity">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEABACAEACAAAAAAAAACEAAAAASABAIAAAgA=</HashCode>
+      <FileName>Methods\Activity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Methods.ActivityPeriod">
+    <Position X="16.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQCAAAAQAAAggAAAAAQAARAAAICQABAAAAAA=</HashCode>
+      <FileName>Methods\ActivityPeriod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Methods.Auth">
+    <Position X="11.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAQAEAAAAA=</HashCode>
+      <FileName>Methods\Auth.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Methods.Project">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAEAAAAAAABIgAAAFAogCgAIGAACAQAAAAABCCAI=</HashCode>
+      <FileName>Methods\Project.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Methods.User">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="TimeTrackerBot.Methods.User.State" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Methods\User.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="TimeTrackerBot.Methods.User.TrackingState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Methods\User.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IAAABEAIAAAAABAABAAAAAAAAAAkABAIgCAABAAAAgQ=</HashCode>
+      <FileName>Methods\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Bot">
+    <Position X="7.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAQAAAAAAAAAAAAAAAAAAAQAABAAAAAA=</HashCode>
+      <FileName>Bot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.CommandHandler">
+    <Position X="9" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAAFAAAAAAAAIACAAAAACAAAgAAIAAEAAAACAFAAAAA=</HashCode>
+      <FileName>CommandHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.DateTimeConverter">
+    <Position X="5.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAgAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>DataTimeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.InlineKeyboard">
+    <Position X="3.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAASgAAAAAAIAAAAAARAggAAAEAAAAAAAIEADAhAhAA=</HashCode>
+      <FileName>InlineKeyboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Program">
+    <Position X="7.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TimeTrackerBot.Token">
+    <Position X="5.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAIAAAQAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Token.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

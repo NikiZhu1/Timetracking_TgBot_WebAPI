@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using TimeTrackerBot.Methods;
 
 namespace TimeTrackerBot.ApiServices
 {
@@ -19,14 +20,17 @@ namespace TimeTrackerBot.ApiServices
         {
             var token = Token.GetToken(chatId);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var payload = new
             {
                 projectName = name
             };
-            var json = JsonSerializer.Serialize(payload);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var jsonData = JsonSerializer.Serialize(payload);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync("http://localhost:8080/api/Projects", content);
             response.EnsureSuccessStatusCode();
+
             var jsonString = await response.Content.ReadAsStringAsync();
         }
 
@@ -61,14 +65,17 @@ namespace TimeTrackerBot.ApiServices
         {
             var token = Token.GetToken(chatId);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var url = $"http://localhost:8080/api/Projects/{projectId}";
             var response = await httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить проект");
+
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
+
             options.Converters.Add(new DateTimeConverter());
             var project = await response.Content.ReadFromJsonAsync<Project>(options);
             return project ?? new();

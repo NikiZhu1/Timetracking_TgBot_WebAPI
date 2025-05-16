@@ -3,6 +3,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using TimeTrackerBot.Methods;
+using User = TimeTrackerBot.Methods.User;
 
 namespace TimeTrackerBot;
 

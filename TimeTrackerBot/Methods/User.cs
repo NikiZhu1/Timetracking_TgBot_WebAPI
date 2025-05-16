@@ -1,6 +1,6 @@
 ﻿using TimeTrackerBot.ApiServices;
 
-namespace TimeTrackerBot
+namespace TimeTrackerBot.Methods
 {
     public class User
     {
