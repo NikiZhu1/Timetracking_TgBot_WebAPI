@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TimeTrackerBot": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

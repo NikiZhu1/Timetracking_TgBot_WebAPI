@@ -8,7 +8,7 @@ namespace TimeTrackerBot.ApiServices
 {
     public class ProjectService
     {
-        private readonly HttpClient httpClient = new();
+        private readonly ApiClient apiClient = new();
 
         /// <summary>
         /// Создать проект
@@ -19,7 +19,7 @@ namespace TimeTrackerBot.ApiServices
         public async Task CreateProject(long chatId, int userId, string name)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var payload = new
             {
@@ -28,7 +28,7 @@ namespace TimeTrackerBot.ApiServices
 
             var jsonData = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Projects", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Projects", content);
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -42,9 +42,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<Project>?> GetProjects(long chatId, bool current)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = $"http://localhost:8080/api/Projects?current={current}";
-            var response = await httpClient.GetAsync(url);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"{apiClient.BaseUrl}/Projects?current={current}";
+            var response = await apiClient.HttpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить список проектов");
             var options = new JsonSerializerOptions
@@ -64,10 +64,10 @@ namespace TimeTrackerBot.ApiServices
         public async Task<Project> GetProjectById(long chatId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var url = $"http://localhost:8080/api/Projects/{projectId}";
-            var response = await httpClient.GetAsync(url);
+            var url = $"{apiClient.BaseUrl}/Projects/{projectId}";
+            var response = await apiClient.HttpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить проект");
 
@@ -89,10 +89,10 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<ProjectUser>?> GetUserProjectsAsync(long chatId, int userId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var url = $"http://localhost:8080/api/Users/{userId}/projects";
-            var response = await httpClient.GetAsync(url);
+            var url = $"{apiClient.BaseUrl}/Users/{userId}/projects";
+            var response = await apiClient.HttpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить список проектов пользователя");
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -108,9 +108,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<ProjectUser>> GetProjectParticipants(long chatId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = $"http://localhost:8080/api/Projects/{projectId}/users";
-            var response = await httpClient.GetAsync(url);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"{apiClient.BaseUrl}/Projects/{projectId}/users";
+            var response = await apiClient.HttpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить список участников проекта");
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -126,9 +126,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<ProjectActivity>?> GetProjectActivities(long chatId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var url = $"http://localhost:8080/api/Projects/{projectId}/activities";
-            var response = await httpClient.GetAsync(url);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var url = $"{apiClient.BaseUrl}/Projects/{projectId}/activities";
+            var response = await apiClient.HttpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить список активностей проекта");
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -145,7 +145,7 @@ namespace TimeTrackerBot.ApiServices
         public async Task<ProjectActivity> AddActivityInProject(long chatId, int activityId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 activityId,
@@ -153,7 +153,7 @@ namespace TimeTrackerBot.ApiServices
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Projects/activity", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Projects/activity", content);
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -179,7 +179,7 @@ namespace TimeTrackerBot.ApiServices
         public async Task<ProjectUser> AddUserInProject(long chatId, int userId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 userId,
@@ -187,7 +187,7 @@ namespace TimeTrackerBot.ApiServices
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Projects/user", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Projects/user", content);
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -213,13 +213,13 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> ChangeProjectName(long chatId, int projectId, string name)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 projectName = name
             };
 
-            var response = await httpClient.PatchAsJsonAsync($"http://localhost:8080/api/Projects/{projectId}", payload);
+            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl}/Projects/{projectId}", payload);
             return response;
         }
 
@@ -231,12 +231,12 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> CloseProjectAsync(long chatId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 closeProject = true
             };
-            var response = await httpClient.PatchAsJsonAsync($"http://localhost:8080/api/Projects/{projectId}", payload);
+            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl}/Projects/{projectId}", payload);
             return response;
         }
 
@@ -248,9 +248,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> DeleteProjectAsync(long chatId, int projectId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.DeleteAsync($"http://localhost:8080/api/Projects/{projectId}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl}/Projects/{projectId}");
             return response;
         }
 
@@ -262,14 +262,14 @@ namespace TimeTrackerBot.ApiServices
         public async Task<ProjectUser> ConnectToProjectAsync(long chatId, string key)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 accessKey = key
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync($"http://localhost:8080/api/Users/project", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Users/project", content);
             if (response.IsSuccessStatusCode)
             {
                 var responseBody = await response.Content.ReadAsStringAsync();
@@ -295,9 +295,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> DeleteProjectUserAsync(long chatId, int projectId, int userid)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.DeleteAsync($"http://localhost:8080/api/Projects/{projectId}/user/{userid}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl} /Projects/ {projectId}");
             return response;
         }
 
@@ -310,9 +310,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> DeleteProjectActivityAsync(long chatId, int projectId, int activityId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.DeleteAsync($"http://localhost:8080/api/Projects/{projectId}/activity/{activityId}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl} /Projects/ {projectId}");
             return response;
         }
     }

@@ -1,0 +1,11 @@
+﻿version: '3.8'
+
+services:
+  timetracking-bot:
+    container_name: timetracking-bot.local
+    build:
+      context: .
+    env_file: .env
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    restart: always

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
@@ -9,7 +10,7 @@ namespace TimeTrackerBot.ApiServices
 {
     public class ActivityService
     {
-        private readonly HttpClient httpClient = new();
+        private readonly ApiClient apiClient = new();
 
         /// <summary>
         /// Получение активностей
@@ -22,9 +23,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<Activity>> GetActivitiesAsync(long chatId, int userId, bool? onlyActive = null, bool? onlyInProcess = null, bool? onlyArchived = null)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var url = $"http://localhost:8080/api/Users/{userId}/activities";
+            var url = $"{apiClient.BaseUrl}/Users/{userId}/activities";
 
             var queryParams = new List<string>();
             if (onlyArchived.HasValue)
@@ -37,7 +38,7 @@ namespace TimeTrackerBot.ApiServices
             if (queryParams.Any())
                 url += "?" + string.Join("&", queryParams);
 
-            var response = await httpClient.GetAsync(url);
+            var response = await apiClient.HttpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
                 throw new Exception("Не удалось получить список активностей");
@@ -60,8 +61,8 @@ namespace TimeTrackerBot.ApiServices
         public async Task<Activity?> GetActivityById(long chatId, int activityId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await httpClient.GetAsync($"http://localhost:8080/api/Activities/{activityId}");
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Activities/{activityId}");
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -83,7 +84,7 @@ namespace TimeTrackerBot.ApiServices
         public async Task<Activity> CreateActivity(long chatId, int userId, string name)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var payload = new
             {
@@ -92,7 +93,7 @@ namespace TimeTrackerBot.ApiServices
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Activities", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Activities", content);
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
@@ -113,13 +114,13 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> UpdateActivityNameAsync(long chatId, int activityId, string newname)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 newName = newname
             };
 
-            var response = await httpClient.PatchAsJsonAsync($"http://localhost:8080/api/Activities/{activityId}", payload);
+            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl}/Activities/{activityId}", payload);
 
             return response;
         }
@@ -134,13 +135,13 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> ChangeActivityStatus(long chatId, int activityId, bool archive)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var payload = new
             {
                 archived = archive
             };
 
-            var response = await httpClient.PatchAsJsonAsync($"http://localhost:8080/api/Activities/{activityId}", payload);
+            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl} /Activities/{activityId}", payload);
             return response;
         }
 
@@ -153,9 +154,9 @@ namespace TimeTrackerBot.ApiServices
         public async Task<HttpResponseMessage> DeleteActivityAsync(long chatId, int activityId)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await httpClient.DeleteAsync($"http://localhost:8080/api/Activities/{activityId}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl} /Activities/{activityId}");
 
             return response;
         }

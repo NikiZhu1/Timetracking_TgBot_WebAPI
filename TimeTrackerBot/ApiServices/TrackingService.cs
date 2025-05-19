@@ -7,7 +7,7 @@ namespace TimeTrackerBot.ApiServices
 {
     public class TrackingService
     {
-        private readonly HttpClient httpClient = new();
+        private readonly ApiClient apiClient = new();
 
         /// <summary>
         /// Управление отслеживанием активности
@@ -18,14 +18,14 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<ActivityPeriod>?> TrackingAsync(long chatId, int activityId, bool isStart)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var dto = new
             {
                 activityId = activityId,
                 isStarted = isStart
             };
-            var response = await httpClient.PostAsJsonAsync("http://localhost:8080/api/ActivityPeriods", dto);
+            var response = await apiClient.HttpClient.PostAsJsonAsync($"{apiClient.BaseUrl}/ActivityPeriods", dto);
             var jsonString = await response.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions
             {
@@ -47,13 +47,13 @@ namespace TimeTrackerBot.ApiServices
         public async Task<List<ActivityPeriod>?> GetStatisticsAsync(long chatId, int userId = 0, int activityId = 0, DateTime? from = null, DateTime? to = null)
         {
             var token = Token.GetToken(chatId);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var url = $"http://localhost:8080/api/ActivityPeriods?activityId={activityId}&userId={userId}";
+            var url = $"{apiClient.BaseUrl}/ActivityPeriods?activityId={activityId}&userId={userId}";
             if (from.HasValue) url += $"&data1={from.Value:yyyy-MM-ddTHH:mm:ss}";
             if (to.HasValue) url += $"&data2={to.Value:yyyy-MM-ddTHH:mm:ss}";
 
-            var response = await httpClient.GetAsync(url);
+            var response = await apiClient.HttpClient.GetAsync(url);
 
             var jsonString = await response.Content.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)

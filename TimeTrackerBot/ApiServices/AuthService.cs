@@ -7,7 +7,7 @@ namespace TimeTrackerBot.ApiServices
 {
     public class AuthService
     {
-        private readonly HttpClient httpClient = new();
+        private readonly ApiClient apiClient = new();
 
         public class TokenResponse
         {
@@ -32,14 +32,14 @@ namespace TimeTrackerBot.ApiServices
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Users", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Users", content);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($" Ошибка при получении токена: {response.RequestMessage}");
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<TokenResponse>(jsonString);
             string token = result.Token;
             Token.SaveToken(chatId, token);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         /// <summary>
@@ -62,14 +62,14 @@ namespace TimeTrackerBot.ApiServices
             };
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync("http://localhost:8080/api/Auth/login", content);
+            var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Auth/login", content);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($" Ошибка при получении токена: {response.RequestMessage}");
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<TokenResponse>(jsonString);
             string token = result.Token;
             Token.SaveToken(chatId, token);
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         /// <summary>

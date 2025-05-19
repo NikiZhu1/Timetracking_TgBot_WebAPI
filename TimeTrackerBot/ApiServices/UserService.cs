@@ -6,14 +6,14 @@ namespace TimeTrackerBot.ApiServices
 {
     public class UserService
     {
-        private readonly HttpClient httpClient = new();
+        private readonly ApiClient apiClient = new();
 
         /// <summary>
         /// Получение всех пользователей
         /// </summary>
         public async Task<List<User>?> GetUsers(long chatId)
         {
-            var response = await httpClient.GetAsync($"http://localhost:8080/api/Users");
+            var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users");
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<List<User>>(jsonString);
             return result;
@@ -25,7 +25,7 @@ namespace TimeTrackerBot.ApiServices
         /// <param name="chatId">id пользователя телеграма</param>
         public async Task<User?> GetUserByChatId(long chatId)
         {
-            var response = await httpClient.GetAsync($"http://localhost:8080/api/Users/by-chatId/{chatId}");
+            var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users/by-chatId/{chatId}");
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
             var jsonString = await response.Content.ReadAsStringAsync();
@@ -39,7 +39,7 @@ namespace TimeTrackerBot.ApiServices
         /// <param name="userId">id пользователя</param>
         public async Task<User?> GetUserById(int userId)
         {
-            var response = await httpClient.GetAsync($"http://localhost:8080/api/Users/{userId}");
+            var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users/{userId}");
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
             var jsonString = await response.Content.ReadAsStringAsync();
