@@ -30,10 +30,20 @@ public class CommandHandler
         var chatId = message.Chat.Id;
         var text = message.Text;
         (User.State state, int? activityId) userInfo = User.GetState(chatId);
-        currentUser = await User.GetUserByChatId(chatId);
+        //currentUser = await User.GetUserByChatId(chatId);
 
-        if (currentUser == null) await Auth.Register(chatId, message.Chat.Username);
-        else await Auth.Login(chatId, message.Chat.Username);
+        try
+        {
+            currentUser = await User.GetUserByChatId(chatId);
+            //await Auth.Register(chatId, message.Chat.Username);
+        }
+        catch
+        {
+            await Auth.Register(chatId, message.Chat.Username);
+            //await Auth.Login(chatId, message.Chat.Username);
+        }
+
+        await Auth.Login(chatId, message.Chat.Username);
 
         Console.WriteLine($"Получено сообщение: {text}");
 

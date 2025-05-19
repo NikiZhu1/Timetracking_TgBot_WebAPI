@@ -24,17 +24,21 @@ namespace TimeTrackerBot.ApiServices
             var existingToken = Token.GetToken(chatId);
             if (!string.IsNullOrEmpty(existingToken) && !IsTokenExpired(existingToken))
                 return;
+
             var payload = new
             {
-                name = "<Tg/>" + username,
+                name = username + "(tg)",
                 password = "string",
                 chatId = chatId
             };
+
             var json = JsonSerializer.Serialize(payload);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await apiClient.HttpClient.PostAsync($"{apiClient.BaseUrl}/Users", content);
+
             if (!response.IsSuccessStatusCode)
                 throw new Exception($" Ошибка при получении токена: {response.RequestMessage}");
+            
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<TokenResponse>(jsonString);
             string token = result.Token;
@@ -56,7 +60,7 @@ namespace TimeTrackerBot.ApiServices
 
             var payload = new
             {
-                name = "<Tg/>" + username,
+                name = username + "(tg)",
                 password = "string",
                 chatId = chatId
             };
