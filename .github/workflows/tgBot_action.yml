@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/timetracking-tgbot-webapi:latest
+          tags: ghcr.io/nikizhu1/timetracking-tgbot-webapi:latest
           build-args: |
             TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
             BASE_API_URL=https://crow.ommat.ru/api
