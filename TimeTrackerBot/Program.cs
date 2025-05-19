@@ -1,10 +1,12 @@
-﻿namespace TimeTrackerBot;
+﻿using System.Configuration;
+
+namespace TimeTrackerBot;
 
 internal class Program
 {
     static async Task Main(string[] args)
     {
-        string token = " ";
+        string token = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN") ?? ConfigurationManager.AppSettings["TELEGRAM_BOT_TOKEN"];
         var botClient = new Bot(token);
         Console.WriteLine("Бот запущен");
         await botClient.StartAsync();
