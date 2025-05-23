@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
+﻿using System.Collections.Generic;
+using Telegram.Bot.Types.ReplyMarkups;
 using TimeTrackerBot.Methods;
 
 namespace TimeTrackerBot
@@ -69,6 +70,7 @@ namespace TimeTrackerBot
             return new InlineKeyboardMarkup(rows);
         }
 
+        //Помощь
         public static InlineKeyboardMarkup Help()
         {
             InlineKeyboardMarkup technicalSupportKeyboard = new(
@@ -81,6 +83,10 @@ namespace TimeTrackerBot
                 new InlineKeyboardButton[]
                 {
                     InlineKeyboardButton.WithUrl("Сотрудничество", "https://forms.gle/9W8C3epktot9inR66"),
+                },
+                new InlineKeyboardButton[]
+                {
+                    InlineKeyboardButton.WithUrl("🌐 Веб-приложение", "https://crow.ommat.ru/"),
                 }
             }
             );
@@ -88,6 +94,7 @@ namespace TimeTrackerBot
             return technicalSupportKeyboard;
         }
 
+        //Активности в архиве
         public static InlineKeyboardMarkup ChangeArchive(int activityId)
         {
             var changeActKeyboard = new InlineKeyboardMarkup(
@@ -129,22 +136,35 @@ namespace TimeTrackerBot
             return statisticKeyboard;
         }
 
-
+        //Меню проектов
         public static InlineKeyboardMarkup ProjectKB(List<Project> projectList, bool current)
         {
             List<InlineKeyboardButton[]> rows = new();
             if (current)
             {
-                rows.Add(new[] { InlineKeyboardButton.WithCallbackData("➕Добавить проект", "add_project") });
-                rows.Add(new[] { InlineKeyboardButton.WithCallbackData("🗝 Подключиться к проекту", $"conectTo") });
+                InlineKeyboardButton addProject = InlineKeyboardButton.WithCallbackData("➕ Создать", "add_project");
+                InlineKeyboardButton joinToProject = InlineKeyboardButton.WithCallbackData("🗝 Подключиться", $"conectTo");
+
+                rows.Add([addProject, joinToProject]);
             }
 
-            foreach (Project project in projectList)
+            List<Project> myProjects = projectList.Where(project => project.UserIsCreator).ToList();
+            List<Project> notMyProjects = projectList.Where(project => !project.UserIsCreator).ToList();
+
+            foreach (Project project in myProjects)
             {
                 if (current)
-                    rows.Add(new[] { InlineKeyboardButton.WithCallbackData($"{project.projectName}", $"projectInfo{project.projectId}") });
+                    rows.Add([InlineKeyboardButton.WithCallbackData($"✳️ {project.projectName}", $"creatorProjectInfo{project.projectId}")]);
                 else
-                    rows.Add(new[] { InlineKeyboardButton.WithCallbackData($"{project.projectName}", $"closedProjectInfo{project.projectId}") });
+                    rows.Add([InlineKeyboardButton.WithCallbackData($"✳️ {project.projectName}", $"creatorClosedProjectInfo{project.projectId}")]);
+            }
+
+            foreach (Project project in notMyProjects)
+            {
+                if (current)
+                    rows.Add([InlineKeyboardButton.WithCallbackData($"👥 {project.projectName}", $"projectInfo{project.projectId}")]);
+                else
+                    rows.Add([InlineKeyboardButton.WithCallbackData($"👥 {project.projectName}", $"closedProjectInfo{project.projectId}")]);
             }
 
             if (current)
@@ -153,10 +173,10 @@ namespace TimeTrackerBot
             return new InlineKeyboardMarkup(rows);
         }
 
-        public static InlineKeyboardMarkup ProjectInfo(int projectId)
+        //О проекте (мой)
+        public static InlineKeyboardMarkup CreatorProjectInfo(int projectId)
         {
-            InlineKeyboardMarkup projectInfoKeyboard = new(
-            new List<InlineKeyboardButton[]>()
+            List<InlineKeyboardButton[]> rows = new()
             {
                 new InlineKeyboardButton[]
                 {
@@ -164,21 +184,41 @@ namespace TimeTrackerBot
                 },
                 new InlineKeyboardButton[]
                 {
-                    InlineKeyboardButton.WithCallbackData("✏️ Изменить", $"updateProject{projectId}"),
+                    InlineKeyboardButton.WithCallbackData("⚙ Управление", $"updateProject{projectId}"),
                 },
                 new InlineKeyboardButton[]
                 {
-                    InlineKeyboardButton.WithCallbackData("❌ Завершить проект", $"close{projectId}"),
-                },
-                new InlineKeyboardButton[]
-                {
+                    InlineKeyboardButton.WithCallbackData("❌ Завершить ", $"close{projectId}"),
                     InlineKeyboardButton.WithCallbackData("🗑 Удалить", $"deleteProject{projectId}")
-                },
-            });
+                }
+            };
+
+            InlineKeyboardMarkup projectInfoKeyboard = new(rows);
 
             return projectInfoKeyboard;
         }
 
+        //О проекте (не мой)
+        public static InlineKeyboardMarkup ProjectInfo(int projectId)
+        {
+            List<InlineKeyboardButton[]> rows = new()
+            {
+                new InlineKeyboardButton[]
+                {
+                    InlineKeyboardButton.WithCallbackData("Активности проекта", $"projectActivities{projectId}"),
+                },
+                new InlineKeyboardButton[]
+                {
+                    InlineKeyboardButton.WithCallbackData("❌ Покинуть", $"leaveProject{projectId}"),
+                }
+            };
+
+            InlineKeyboardMarkup projectInfoKeyboard = new(rows);
+
+            return projectInfoKeyboard;
+        }
+
+        //Завершённые проекты
         public static InlineKeyboardMarkup ClosedProjectInfo()
         {
             InlineKeyboardMarkup closedProjectInfoKeyboard = new(
@@ -193,6 +233,7 @@ namespace TimeTrackerBot
             return closedProjectInfoKeyboard;
         }
 
+        //Активности в проекте
         public static InlineKeyboardMarkup ProjectActivitiesKB(List<Activity> projectActivities)
         {
             List<InlineKeyboardButton[]> rows = new();
@@ -212,7 +253,7 @@ namespace TimeTrackerBot
                         : InlineKeyboardButton.WithCallbackData("❇️ СТАРТ", $"start_{activity.id}");
                 }
 
-                rows.Add(new[] { activityButton, statusButton });
+                rows.Add([activityButton, statusButton]);
             }
 
             rows.Add(new[] { InlineKeyboardButton.WithCallbackData("Статистика проекта", "show_statistic") });
@@ -220,6 +261,7 @@ namespace TimeTrackerBot
             return new InlineKeyboardMarkup(rows);
         }
 
+        //Изменение проекта
         public static InlineKeyboardMarkup ChangeProjectKB(int projectId)
         {
             InlineKeyboardMarkup changeProjectKeyboard = new(
@@ -227,23 +269,24 @@ namespace TimeTrackerBot
             {
                 new InlineKeyboardButton[]
                 {
+                    InlineKeyboardButton.WithCallbackData("✏️ Изменить название", $"renameProject{projectId}"),
+                },
+                new InlineKeyboardButton[]
+                {
                     InlineKeyboardButton.WithCallbackData("👤 Добавить участника", $"addUserInProject{projectId}"),
-                    InlineKeyboardButton.WithCallbackData("🗑 Удалить участника", $"removeUser{projectId}"),
+                    InlineKeyboardButton.WithCallbackData("🚷 Удалить участника", $"removeUser{projectId}"),
                 },
                 new InlineKeyboardButton[]
                 {
                     InlineKeyboardButton.WithCallbackData("➕ Добавить активность", $"addActivityInProject{projectId}"),
-                    InlineKeyboardButton.WithCallbackData("🗑 Удалить активность", $"removeActivity{projectId}"),
-                },
-                new InlineKeyboardButton[]
-                {
-                    InlineKeyboardButton.WithCallbackData("✏️ Изменить название", $"renameProject{projectId}"),
+                    InlineKeyboardButton.WithCallbackData("🚳 Удалить активность", $"removeActivity{projectId}"),
                 },
             });
 
             return changeProjectKeyboard;
         }
 
+        //Удаление участников из проекта
         public static InlineKeyboardMarkup DeletingUsersKB(List<User> users)
         {
             List<InlineKeyboardButton[]> rows = new();
@@ -255,6 +298,7 @@ namespace TimeTrackerBot
             return new InlineKeyboardMarkup(rows);
         }
 
+        //Удаление активностей из проекта
         public static InlineKeyboardMarkup DeletingActivitiesKB(List<Activity> activities)
         {
             List<InlineKeyboardButton[]> rows = new();
@@ -266,7 +310,7 @@ namespace TimeTrackerBot
             return new InlineKeyboardMarkup(rows);
         }
 
-        //Словаь, в котором хранятся состояния для удаления
+        //Словарь, в котором хранятся состояния для удаления
         private static readonly Dictionary<long, int> messageIdsForDelete = new();
 
         //Записать message.id для удаления

@@ -297,7 +297,7 @@ namespace TimeTrackerBot.ApiServices
             var token = Token.GetToken(chatId);
             apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl} /Projects/ {projectId}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl}/Projects/{projectId}/user/{userid}");
             return response;
         }
 

@@ -77,7 +77,7 @@ public class ActivityPeriod
     public async Task<bool> Start(long chatId, int activityId, Activity act)
     {
         if (act.statusId == 2) return false;
-        var result = api.TrackingAsync(chatId, activityId, true);
+        var result = await api.TrackingAsync(chatId, activityId, true);
         if (result != null)
             return true;
         return false;
@@ -95,8 +95,9 @@ public class ActivityPeriod
         foreach (var period in periods)
         {
             if (period is not null)
-                text += $"🏁 {act.name}:\n" +
-                    $"{period.startTime} - {period.stopTime} \n⏱ Затрачено: {period.totalTime?.ToString(@"hh\:mm\:ss")}\n";
+                text += $"🏁 {act.name}\n\n" +
+                    $"{period.startTime} - {period.stopTime} \n" +
+                    $"⏱ Затрачено: {period.totalTime?.ToString(@"hh\:mm\:ss")}\n";
         }
         User.ResetState(chatId);
 

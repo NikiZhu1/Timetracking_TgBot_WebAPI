@@ -1,4 +1,5 @@
-﻿using TimeTrackerBot.ApiServices;
+﻿using System.Net.Http.Headers;
+using TimeTrackerBot.ApiServices;
 
 namespace TimeTrackerBot.Methods
 {
@@ -97,6 +98,13 @@ namespace TimeTrackerBot.Methods
             User user = await api.GetUserById(userId);
             if (user == null) { throw new Exception($"User with ID {userId} not found"); }
             else { return user; }
+        }
+
+        public async Task<HttpResponseMessage> DeleteAccountAsync(long chatId, int userId)
+        {
+            var response = await api.DeleteAccountAsync(chatId, userId);
+
+            return response;
         }
     }
 }

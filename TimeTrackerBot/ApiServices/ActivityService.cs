@@ -141,7 +141,7 @@ namespace TimeTrackerBot.ApiServices
                 archived = archive
             };
 
-            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl} /Activities/{activityId}", payload);
+            var response = await apiClient.HttpClient.PatchAsJsonAsync($"{apiClient.BaseUrl}/Activities/{activityId}", payload);
             return response;
         }
 
@@ -156,7 +156,7 @@ namespace TimeTrackerBot.ApiServices
             var token = Token.GetToken(chatId);
             apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl} /Activities/{activityId}");
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl}/Activities/{activityId}");
 
             return response;
         }

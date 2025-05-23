@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using TimeTrackerBot.Methods;
 
@@ -45,6 +46,16 @@ namespace TimeTrackerBot.ApiServices
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<User>(jsonString);
             return result;
+        }
+
+        public async Task<HttpResponseMessage> DeleteAccountAsync(long chatId, int userId)
+        {
+            var token = Token.GetToken(chatId);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await apiClient.HttpClient.DeleteAsync($"{apiClient.BaseUrl}/Users/{userId}");
+
+            return response;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using TimeTrackerBot.ApiServices;
 
 namespace TimeTrackerBot.Methods
@@ -6,10 +7,16 @@ namespace TimeTrackerBot.Methods
     public class Project
     {
         public int projectId { get; set; }
+
         public string projectName { get; set; }
+
         public string projectKey { get; set; }
+
         public DateTime? creationDate { get; set; }
+
         public DateTime? finishDate { get; set; }
+
+        public bool UserIsCreator { get; set; }
 
         private readonly ProjectService projectApi = new();
         private readonly UserService userApi = new();
@@ -31,20 +38,22 @@ namespace TimeTrackerBot.Methods
         {
             var projects = await projectApi.GetProjects(chatId, current);
             var userProjects = await projectApi.GetUserProjectsAsync(chatId, userId);
-            if (userProjects.Count != 0)
+
+            if (userProjects.Count == 0)
+                return new();
+
+            var result = new List<Project>();
+            foreach (var project in projects)
             {
-                var result = new List<Project>();
-                foreach (var project in projects)
+                var userProject = userProjects.FirstOrDefault(p => p.projectId == project.projectId);
+                if (userProject != null)
                 {
-                    foreach (var pr in userProjects)
-                    {
-                        if (pr.projectId == project.projectId)
-                            result.Add(project);
-                    }
+                    project.UserIsCreator = userProject.isCreator;
+                    result.Add(project);
                 }
-                return result;
             }
-            else { return new(); }
+
+            return result;
         }
 
         // участники проекта
@@ -216,6 +225,11 @@ namespace TimeTrackerBot.Methods
                 HttpStatusCode.InternalServerError => "🚨 Ошибка сервера при удалении.",
                 _ => $"⚠️ Неизвестная ошибка: {result.StatusCode}"
             };
+        }
+
+        public static string Escape(string text)
+        {
+            return Regex.Replace(text, @"([_*\[\]()~>#+\-=|{}.!])", @"\$1");
         }
     }
 }
