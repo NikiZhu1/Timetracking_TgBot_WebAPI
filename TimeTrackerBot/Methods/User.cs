@@ -93,9 +93,9 @@ namespace TimeTrackerBot.Methods
             else { return user; }
         }
 
-        public async Task<User> GetUserById(int userId)
+        public async Task<User> GetUserById(long chatId, int userId)
         {
-            User user = await api.GetUserById(userId);
+            User user = await api.GetUserById(chatId, userId);
             if (user == null) { throw new Exception($"User with ID {userId} not found"); }
             else { return user; }
         }

@@ -26,8 +26,8 @@ namespace TimeTrackerBot.ApiServices
                 return;
 
             string name = username + " (tg)";
-            if (username == "nikizhu")
-                name = "<Tg/>nikizhu";
+            //if (username == "nikizhu")
+            //    name = "<Tg/>nikizhu";
 
             var payload = new
             {
@@ -44,6 +44,8 @@ namespace TimeTrackerBot.ApiServices
                 throw new Exception($" Ошибка при получении токена: {response.RequestMessage}");
 
             var jsonString = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(jsonString))
+                throw new Exception("Пустой ответ от API");
             var result = JsonSerializer.Deserialize<TokenResponse>(jsonString);
             string token = result.Token;
             Token.SaveToken(chatId, token);
@@ -63,8 +65,8 @@ namespace TimeTrackerBot.ApiServices
                 return;
 
             string name = username + " (tg)";
-            if (username == "nikizhu")
-                name = "<Tg/>nikizhu";
+            //if (username == "nikizhu")
+            //    name = "<Tg/>nikizhu";
 
             var payload = new
             {
@@ -79,7 +81,11 @@ namespace TimeTrackerBot.ApiServices
             if (!response.IsSuccessStatusCode)
                 throw new Exception($" Ошибка при получении токена: {response.RequestMessage}");
             var jsonString = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(jsonString))
+                throw new Exception("Пустой ответ от API");
             var result = JsonSerializer.Deserialize<TokenResponse>(jsonString);
+            if (result?.Token == null)
+                throw new Exception("Токен не получен");
             string token = result.Token;
             Token.SaveToken(chatId, token);
             apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

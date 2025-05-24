@@ -14,6 +14,9 @@ namespace TimeTrackerBot.ApiServices
         /// </summary>
         public async Task<List<User>?> GetUsers(long chatId)
         {
+            var token = Token.GetToken(chatId);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users");
             var jsonString = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<List<User>>(jsonString);
@@ -26,10 +29,17 @@ namespace TimeTrackerBot.ApiServices
         /// <param name="chatId">id пользователя телеграма</param>
         public async Task<User?> GetUserByChatId(long chatId)
         {
+            var token = Token.GetToken(chatId);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users/by-chatId/{chatId}");
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
+
             var jsonString = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(jsonString))
+                return null;
+
             var result = JsonSerializer.Deserialize<User>(jsonString);
             return result;
         }
@@ -38,12 +48,18 @@ namespace TimeTrackerBot.ApiServices
         /// Получение информации пользователя по id 
         /// </summary>
         /// <param name="userId">id пользователя</param>
-        public async Task<User?> GetUserById(int userId)
+        public async Task<User?> GetUserById(long chatId, int userId)
         {
+            var token = Token.GetToken(chatId);
+            apiClient.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await apiClient.HttpClient.GetAsync($"{apiClient.BaseUrl}/Users/{userId}");
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return null;
             var jsonString = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrWhiteSpace(jsonString))
+                return null;
+
             var result = JsonSerializer.Deserialize<User>(jsonString);
             return result;
         }

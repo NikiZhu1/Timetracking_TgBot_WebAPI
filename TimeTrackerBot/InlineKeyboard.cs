@@ -73,6 +73,10 @@ namespace TimeTrackerBot
         //Помощь
         public static InlineKeyboardMarkup Help()
         {
+            var baseApiUrl = Environment.GetEnvironmentVariable("BASE_API_URL");
+            var uri = new Uri(baseApiUrl);
+            var baseWebsiteUrl = $"{uri.Scheme}://{uri.Host}/";
+
             InlineKeyboardMarkup technicalSupportKeyboard = new(
             new List<InlineKeyboardButton[]>()
             {
@@ -86,7 +90,7 @@ namespace TimeTrackerBot
                 },
                 new InlineKeyboardButton[]
                 {
-                    InlineKeyboardButton.WithUrl("🌐 Веб-приложение", "https://crow.ommat.ru/"),
+                    InlineKeyboardButton.WithUrl("🌐 Веб-приложение", baseWebsiteUrl),
                 }
             }
             );
