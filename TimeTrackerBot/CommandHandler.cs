@@ -35,6 +35,7 @@ public class CommandHandler
 
         try
         {
+            await Auth.Login(chatId, message.Chat.Username);
             currentUser = await User.GetUserByChatId(chatId);
         }
         catch
@@ -654,7 +655,7 @@ public class CommandHandler
                     foreach (var participant in users)
                     {
                         string role = participant.isCreator ? "Создатель проекта" : "Участник";
-                        var user = await User.GetUserById(participant.userId);
+                        var user = await User.GetUserById(chatId, participant.userId);
                         participants += $"{user.name} - {role} \n";
                     }
                     if (currProject != null)
@@ -687,7 +688,7 @@ public class CommandHandler
                     foreach (var participant in users)
                     {
                         string role = participant.isCreator ? "Создатель проекта" : "Участник";
-                        var user = await User.GetUserById(participant.userId);
+                        var user = await User.GetUserById(chatId, participant.userId);
                         participants += $"{user.name}: {role} \n";
                     }
                     if (currProject != null)
@@ -719,7 +720,7 @@ public class CommandHandler
                     foreach (var participant in users)
                     {
                         string role = participant.isCreator ? "Создатель проекта" : "Участник";
-                        var user = await User.GetUserById(participant.userId);
+                        var user = await User.GetUserById(chatId, participant.userId);
                         participants += $"{user.name} - {role} \n";
                     }
 

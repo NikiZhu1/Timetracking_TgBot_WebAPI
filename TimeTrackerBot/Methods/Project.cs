@@ -64,7 +64,7 @@ namespace TimeTrackerBot.Methods
             List<User> users = new List<User>();
             foreach (var participant in participants)
             {
-                var user = await userApi.GetUserById(participant.userId);
+                var user = await userApi.GetUserById(chatId, participant.userId);
                 users.Add(user);
             }
             return users;
@@ -83,7 +83,7 @@ namespace TimeTrackerBot.Methods
             foreach (var participant in participants)
             {
                 if (participant.isCreator)
-                    creator = await userApi.GetUserById(participant.userId);
+                    creator = await userApi.GetUserById(chatId, participant.userId);
             }
             return creator;
         }
